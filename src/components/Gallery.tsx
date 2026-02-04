@@ -1,0 +1,35 @@
+import { GalleryPost } from '../utils/reddit';
+import MediaCard from './MediaCard';
+
+type Props = {
+  posts: GalleryPost[];
+  onOpen: (postIndex: number, mediaIndex: number) => void;
+};
+
+export default function Gallery({ posts, onOpen }: Props) {
+  return (
+    <section className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="font-display text-lg uppercase tracking-wide text-chalk/80">
+          Gallery
+        </h2>
+        <span className="text-xs text-chalk/50">{posts.length} posts</span>
+      </div>
+      {posts.length === 0 ? (
+        <p className="text-sm text-chalk/50">No visual posts found.</p>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2">
+          {posts.map((post, postIndex) => (
+            <MediaCard
+              key={post.id}
+              title={post.title}
+              media={post.media[0]}
+              mediaCount={post.media.length}
+              onClick={() => onOpen(postIndex, 0)}
+            />
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
