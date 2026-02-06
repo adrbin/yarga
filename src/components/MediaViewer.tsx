@@ -106,6 +106,9 @@ export default function MediaViewer({
               className="max-h-[80vh] w-full max-w-4xl rounded-2xl"
               src={media.url}
               poster={media.poster}
+              autoPlay
+              muted
+              playsInline
               controls
             />
           ) : (
