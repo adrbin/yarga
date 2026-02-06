@@ -1,4 +1,7 @@
 import { Subreddit } from '../hooks/useSubreddits';
+import Button from './ui/Button';
+import Panel from './ui/Panel';
+import SectionHeader from './ui/SectionHeader';
 
 type Props = {
   title: string;
@@ -16,13 +19,8 @@ export default function SubredditList({
   onToggleFavorite
 }: Props) {
   return (
-    <section className="rounded-2xl border border-white/10 bg-white/5 p-4">
-      <div className="mb-3 flex items-center justify-between">
-        <h2 className="font-display text-lg uppercase tracking-wide text-chalk/80">
-          {title}
-        </h2>
-        <span className="text-xs text-chalk/50">{items.length}</span>
-      </div>
+    <Panel>
+      <SectionHeader className="mb-3" title={title} count={items.length} />
       {items.length === 0 ? (
         <p className="text-sm text-chalk/50">Nothing here yet.</p>
       ) : (
@@ -40,26 +38,28 @@ export default function SubredditList({
               </button>
               <div className="flex items-center gap-2">
                 {onToggleFavorite && (
-                  <button
-                    className="rounded-full border border-white/20 px-3 py-1 text-[10px] uppercase tracking-wide text-chalk/70 hover:bg-white/10"
+                  <Button
+                    variant="pill"
+                    size="pill-sm"
                     onClick={() => onToggleFavorite(item.name)}
                     aria-label={`Toggle favorite ${item.name}`}
                   >
                     {item.favorited ? 'Unfavorite' : 'Favorite'}
-                  </button>
+                  </Button>
                 )}
-                <button
-                  className="rounded-full border border-white/20 px-3 py-1 text-[10px] uppercase tracking-wide text-chalk/70 hover:bg-white/10"
+                <Button
+                  variant="pill"
+                  size="pill-sm"
                   onClick={() => onRemove(item.name)}
                   aria-label={`Remove ${item.name}`}
                 >
                   Remove
-                </button>
+                </Button>
               </div>
             </li>
           ))}
         </ul>
       )}
-    </section>
+    </Panel>
   );
 }

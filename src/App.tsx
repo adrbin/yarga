@@ -3,6 +3,8 @@ import Gallery from './components/Gallery';
 import MediaViewer from './components/MediaViewer';
 import SearchBar from './components/SearchBar';
 import SubredditList from './components/SubredditList';
+import Button from './components/ui/Button';
+import Panel from './components/ui/Panel';
 import { useGallery } from './hooks/useGallery';
 import { useSubreddits } from './hooks/useSubreddits';
 import { useViewerNavigation } from './hooks/useViewerNavigation';
@@ -59,21 +61,22 @@ export default function App() {
           </>
         ) : (
           <section className="space-y-4">
-            <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 p-4">
+            <Panel as="div" className="flex items-center justify-between">
               <div>
                 <p className="text-xs uppercase tracking-[0.2em] text-chalk/50">Now viewing</p>
                 <p className="mt-2 text-lg font-semibold">{selectedLabel}</p>
               </div>
-              <button
-                className="rounded-full border border-white/20 px-4 py-2 text-xs uppercase tracking-wide text-chalk/70 hover:bg-white/10"
+              <Button
+                variant="pill"
+                size="pill-md"
                 onClick={() => {
                   viewer.close();
                   setView('home');
                 }}
               >
                 Back
-              </button>
-            </div>
+              </Button>
+            </Panel>
             {galleryState.status === 'loading' && (
               <p className="text-sm text-chalk/60">Loading gallery…</p>
             )}

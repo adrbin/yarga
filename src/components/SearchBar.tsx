@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { SubredditSearchResult, useSubredditSearch } from '../hooks/useSubredditSearch';
+import Button from './ui/Button';
+import Panel from './ui/Panel';
 
 const formatSubscribers = (count: number) => {
   if (count >= 1_000_000) return `${(count / 1_000_000).toFixed(1)}m`;
@@ -31,7 +33,7 @@ export default function SearchBar({ onSelect }: Props) {
   };
 
   return (
-    <section className="rounded-2xl border border-white/10 bg-white/5 p-4">
+    <Panel>
       <label className="text-xs uppercase tracking-[0.3em] text-chalk/50" htmlFor="search">
         Subreddit Search
       </label>
@@ -55,8 +57,10 @@ export default function SearchBar({ onSelect }: Props) {
           <p className="text-xs uppercase tracking-[0.2em] text-ember">Search failed</p>
         )}
         {showManualOption && (
-          <button
-            className="flex w-full items-center justify-between rounded-xl border border-white/5 bg-ink/70 px-3 py-2 text-left hover:bg-white/10"
+          <Button
+            variant="list"
+            size="list"
+            className="flex w-full items-center justify-between"
             onClick={() => handleManualSelect(query)}
           >
             <span className="text-sm">
@@ -64,12 +68,14 @@ export default function SearchBar({ onSelect }: Props) {
               <span className="ml-2 text-xs text-chalk/50">Open directly</span>
             </span>
             <span className="text-xs text-chalk/50">Enter</span>
-          </button>
+          </Button>
         )}
         {results.map((item) => (
-          <button
+          <Button
             key={item.name}
-            className="flex w-full items-center justify-between rounded-xl border border-white/5 bg-ink/70 px-3 py-2 text-left hover:bg-white/10"
+            variant="list"
+            size="list"
+            className="flex w-full items-center justify-between"
             onClick={() => handleSelect(item)}
           >
             <span className="text-sm">
@@ -79,10 +85,10 @@ export default function SearchBar({ onSelect }: Props) {
             <span className="text-xs text-chalk/50">
               {formatSubscribers(item.subscribers)} members
             </span>
-          </button>
+          </Button>
         ))}
       </div>
-    </section>
+    </Panel>
   );
 }
 
