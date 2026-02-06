@@ -65,7 +65,7 @@ export default function MediaViewer({
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [onSwipeDown, onSwipeLeft, onSwipeRight, onSwipeUp]);
+  }, [onBack, onSwipeDown, onSwipeLeft, onSwipeRight, onSwipeUp]);
 
   const canGoPrev = mediaIndex > 0;
   const canGoNext = mediaIndex < mediaCount - 1;

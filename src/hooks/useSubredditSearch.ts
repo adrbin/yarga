@@ -7,6 +7,20 @@ export type SubredditSearchResult = {
   icon: string | null;
 };
 
+type SubredditSearchApiItem = {
+  display_name?: string;
+  title?: string;
+  subscribers?: number;
+  icon_img?: string;
+  community_icon?: string;
+};
+
+type SubredditSearchApiResponse = {
+  data: {
+    children: { data: SubredditSearchApiItem }[];
+  };
+};
+
 type SearchState = {
   status: 'idle' | 'loading' | 'success' | 'error';
   results: SubredditSearchResult[];
@@ -36,11 +50,7 @@ export function useSubredditSearch(query: string) {
           )}&limit=8&raw_json=1`
         ];
 
-        let data:
-          | {
-              data: { children: { data: any }[] };
-            }
-          | null = null;
+        let data: SubredditSearchApiResponse | null = null;
 
         for (const endpoint of endpoints) {
           if (cancelled) return;
@@ -57,7 +67,7 @@ export function useSubredditSearch(query: string) {
               });
               continue;
             }
-            data = (await response.json()) as { data: { children: { data: any }[] } };
+            data = (await response.json()) as SubredditSearchApiResponse;
             break;
           } catch (error) {
             if (controller?.signal.aborted) {

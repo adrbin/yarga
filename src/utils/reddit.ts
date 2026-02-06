@@ -13,7 +13,60 @@ export type GalleryPost = {
   media: MediaItem[];
 };
 
-const decodeHtml = (value: string) => value.replaceAll('&amp;', '&');
+type RedditGalleryItem = {
+  media_id: string;
+};
+
+type RedditMediaMetadata = {
+  e?: string;
+  s?: {
+    u?: string;
+  };
+};
+
+type RedditPreviewImage = {
+  source?: {
+    url?: string;
+  };
+  variants?: {
+    gif?: {
+      source?: {
+        url?: string;
+      };
+    };
+  };
+};
+
+type RedditPost = {
+  id: string;
+  title?: string;
+  is_gallery?: boolean;
+  gallery_data?: {
+    items?: RedditGalleryItem[];
+  };
+  media_metadata?: Record<string, RedditMediaMetadata>;
+  preview?: {
+    images?: RedditPreviewImage[];
+  };
+  is_video?: boolean;
+  media?: {
+    reddit_video?: {
+      fallback_url?: string;
+      hls_url?: string;
+    };
+  };
+  url_overridden_by_dest?: string;
+  url?: string;
+  post_hint?: string;
+};
+
+type RedditListing = {
+  data?: {
+    children?: { data?: RedditPost }[];
+  };
+};
+
+const decodeHtml = (value: string) => value.replace(/&amp;/g, '&');
 
 const imageExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
 
@@ -29,18 +82,20 @@ const uniqueByUrl = (items: MediaItem[]) => {
   });
 };
 
-export function extractGalleryPosts(listing: any): GalleryPost[] {
+export function extractGalleryPosts(listing: RedditListing): GalleryPost[] {
   if (!listing?.data?.children) return [];
 
   return listing.data.children
-    .map((child: any) => child?.data)
-    .filter(Boolean)
-    .map((post: any) => {
+    .map((child) => child?.data)
+    .filter((post): post is RedditPost => Boolean(post))
+    .map((post) => {
       const media: MediaItem[] = [];
 
-      if (post.is_gallery && post.gallery_data?.items && post.media_metadata) {
-        post.gallery_data.items.forEach((item: any) => {
-          const meta = post.media_metadata[item.media_id];
+      const galleryItems = post.gallery_data?.items;
+      const mediaMetadata = post.media_metadata;
+      if (post.is_gallery && galleryItems && mediaMetadata) {
+        galleryItems.forEach((item) => {
+          const meta = mediaMetadata[item.media_id];
           const source = meta?.s?.u;
           if (meta?.e === 'Image' && source) {
             media.push({
