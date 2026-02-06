@@ -83,12 +83,40 @@ export default function MediaViewer({
         onSwipeUp={onSwipeUp}
         onSwipeDown={onSwipeDown}
       >
-        <header className="flex items-center justify-between border-b border-white/10 px-6 py-4">
+        <header className="relative flex items-center justify-between border-b border-white/10 px-6 py-4">
           <div>
             <p className="text-xs uppercase tracking-[0.2em] text-chalk/50">
               Post {postIndex + 1} / {postCount}
             </p>
             <p className="mt-2 text-sm font-semibold">{post.title}</p>
+          </div>
+          <div className="pointer-events-none absolute inset-x-0 top-1/2 flex -translate-y-1/2 items-center justify-center">
+            <button
+              type="button"
+              aria-label="Previous post"
+              disabled={!canGoPrevPost}
+              onClick={onSwipeDown}
+              data-no-swipe="true"
+              className={[
+                'pointer-events-auto flex h-10 w-20 items-center justify-center rounded-full border border-white/10',
+                'bg-transparent text-chalk/80',
+                'transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ember/60',
+                canGoPrevPost ? 'opacity-100' : 'cursor-not-allowed opacity-40'
+              ].join(' ')}
+            >
+              <svg
+                aria-hidden="true"
+                className="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M4.5 12.5L10 7l5.5 5.5" />
+              </svg>
+            </button>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-[10px] uppercase tracking-[0.2em] text-chalk/40">Esc</span>
@@ -133,8 +161,8 @@ export default function MediaViewer({
             data-no-swipe="true"
             className={[
               'pointer-events-auto flex h-10 w-20 items-center justify-center rounded-full border border-white/10',
-              'bg-white/5 text-chalk/80 shadow-lg shadow-black/20 backdrop-blur',
-              'transition hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ember/60',
+              'bg-transparent text-chalk/80',
+              'transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ember/60',
               canGoPrev ? 'opacity-100' : 'cursor-not-allowed opacity-40'
             ].join(' ')}
           >
@@ -159,8 +187,8 @@ export default function MediaViewer({
             data-no-swipe="true"
             className={[
               'pointer-events-auto flex h-10 w-20 items-center justify-center rounded-full border border-white/10',
-              'bg-white/5 text-chalk/80 shadow-lg shadow-black/20 backdrop-blur',
-              'transition hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ember/60',
+              'bg-transparent text-chalk/80',
+              'transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ember/60',
               canGoNext ? 'opacity-100' : 'cursor-not-allowed opacity-40'
             ].join(' ')}
           >
@@ -178,67 +206,41 @@ export default function MediaViewer({
             </svg>
           </button>
         </div>
-        <div className="pointer-events-none absolute inset-x-0 top-16 z-20 hidden items-center justify-center md:flex">
-          <button
-            type="button"
-            aria-label="Previous post"
-            disabled={!canGoPrevPost}
-            onClick={onSwipeDown}
-            data-no-swipe="true"
-            className={[
-              'pointer-events-auto flex h-10 w-20 items-center justify-center rounded-full border border-white/10',
-              'bg-white/10 text-chalk/80 shadow-lg shadow-black/20 backdrop-blur',
-              'transition hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ember/60',
-              canGoPrevPost ? 'opacity-100' : 'cursor-not-allowed opacity-40'
-            ].join(' ')}
-          >
-            <svg
-              aria-hidden="true"
-              className="h-5 w-5"
-              viewBox="0 0 20 20"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M4.5 12.5L10 7l5.5 5.5" />
-            </svg>
-          </button>
-        </div>
-        <div className="pointer-events-none absolute inset-x-0 bottom-16 z-20 hidden items-center justify-center md:flex">
-          <button
-            type="button"
-            aria-label="Next post"
-            disabled={!canGoNextPost}
-            onClick={onSwipeUp}
-            data-no-swipe="true"
-            className={[
-              'pointer-events-auto flex h-10 w-20 items-center justify-center rounded-full border border-white/10',
-              'bg-white/10 text-chalk/80 shadow-lg shadow-black/20 backdrop-blur',
-              'transition hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ember/60',
-              canGoNextPost ? 'opacity-100' : 'cursor-not-allowed opacity-40'
-            ].join(' ')}
-          >
-            <svg
-              aria-hidden="true"
-              className="h-5 w-5"
-              viewBox="0 0 20 20"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M4.5 7.5L10 13l5.5-5.5" />
-            </svg>
-          </button>
-        </div>
-        <footer className="flex items-center justify-between border-t border-white/10 px-6 py-4 text-xs text-chalk/60">
+        <footer className="relative flex items-center justify-between border-t border-white/10 px-6 py-4 text-xs text-chalk/60">
           <span>
             Media {mediaIndex + 1} / {mediaCount}
           </span>
-          <span>Swipe or use ←/→ for media · ↑/↓ for posts</span>
+          <div className="pointer-events-none absolute inset-x-0 top-1/2 flex -translate-y-1/2 items-center justify-center">
+            <button
+              type="button"
+              aria-label="Next post"
+              disabled={!canGoNextPost}
+              onClick={onSwipeUp}
+              data-no-swipe="true"
+              className={[
+                'pointer-events-auto flex h-10 w-20 items-center justify-center rounded-full border border-white/10',
+                'bg-transparent text-chalk/80',
+                'transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ember/60',
+                canGoNextPost ? 'opacity-100' : 'cursor-not-allowed opacity-40'
+              ].join(' ')}
+            >
+              <svg
+                aria-hidden="true"
+                className="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M4.5 7.5L10 13l5.5-5.5" />
+              </svg>
+            </button>
+          </div>
+          <div className="flex items-center gap-3">
+            <span>Swipe or use ←/→ for media · ↑/↓ for posts</span>
+          </div>
         </footer>
       </SwipeLayer>
     </div>
