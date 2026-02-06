@@ -14,9 +14,19 @@ type Props = {
 export default function SearchBar({ onSelect }: Props) {
   const [query, setQuery] = useState('');
   const { status, results } = useSubredditSearch(query);
+  const normalizedQuery = normalizeSubreddit(query);
+  const showManualOption =
+    normalizedQuery.length > 0 && !results.some((item) => item.name === normalizedQuery);
 
   const handleSelect = (item: SubredditSearchResult) => {
     onSelect(item.name);
+    setQuery('');
+  };
+
+  const handleManualSelect = (value: string) => {
+    const normalized = normalizeSubreddit(value);
+    if (!normalized) return;
+    onSelect(normalized);
     setQuery('');
   };
 
@@ -31,6 +41,11 @@ export default function SearchBar({ onSelect }: Props) {
         placeholder="Search subreddits"
         value={query}
         onChange={(event) => setQuery(event.target.value)}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter') {
+            handleManualSelect(query);
+          }
+        }}
       />
       <div className="mt-3 space-y-2">
         {status === 'loading' && (
@@ -38,6 +53,18 @@ export default function SearchBar({ onSelect }: Props) {
         )}
         {status === 'error' && (
           <p className="text-xs uppercase tracking-[0.2em] text-ember">Search failed</p>
+        )}
+        {showManualOption && (
+          <button
+            className="flex w-full items-center justify-between rounded-xl border border-white/5 bg-ink/70 px-3 py-2 text-left hover:bg-white/10"
+            onClick={() => handleManualSelect(query)}
+          >
+            <span className="text-sm">
+              <span className="font-semibold">Go to r/{normalizedQuery}</span>
+              <span className="ml-2 text-xs text-chalk/50">Open directly</span>
+            </span>
+            <span className="text-xs text-chalk/50">Enter</span>
+          </button>
         )}
         {results.map((item) => (
           <button
@@ -58,3 +85,14 @@ export default function SearchBar({ onSelect }: Props) {
     </section>
   );
 }
+
+const normalizeSubreddit = (value: string) => {
+  const trimmed = value.trim();
+  if (!trimmed) return '';
+  const cleaned = trimmed
+    .replace(/^https?:\/\/(www\.)?reddit\.com\/r\//i, '')
+    .replace(/^\/?r\//i, '')
+    .replace(/\/.*/g, '')
+    .trim();
+  return cleaned.toLowerCase();
+};
