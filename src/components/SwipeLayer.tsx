@@ -22,16 +22,22 @@ export default function SwipeLayer({
   className,
   testId
 }: Props) {
-  const startRef = useRef<{ x: number; y: number } | null>(null);
+  const startRef = useRef<{ x: number; y: number; pointerId: number } | null>(null);
 
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
-    startRef.current = { x: event.clientX, y: event.clientY };
+    startRef.current = { x: event.clientX, y: event.clientY, pointerId: event.pointerId };
+    if ('setPointerCapture' in event.currentTarget) {
+      event.currentTarget.setPointerCapture(event.pointerId);
+    }
   };
 
   const handlePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (!startRef.current) return;
+    if (!startRef.current || startRef.current.pointerId !== event.pointerId) return;
     const dx = event.clientX - startRef.current.x;
     const dy = event.clientY - startRef.current.y;
+    if ('releasePointerCapture' in event.currentTarget) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
     startRef.current = null;
 
     if (!Number.isFinite(dx) || !Number.isFinite(dy)) {
@@ -61,9 +67,12 @@ export default function SwipeLayer({
   return (
     <div
       data-testid={testId}
-      className={className}
+      className={["touch-none overscroll-none", className].filter(Boolean).join(' ')}
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
+      onPointerCancel={() => {
+        startRef.current = null;
+      }}
     >
       {children}
     </div>
