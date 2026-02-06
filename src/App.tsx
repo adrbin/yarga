@@ -36,8 +36,7 @@ export default function App() {
           <Kicker className="tracking-[0.4em]">PWA Gallery</Kicker>
           <h1 className="font-display text-3xl">Yet Another Reddit Gallery App (YARGA)</h1>
           <p className="text-sm text-chalk/70">
-            YARGA (Yet Another Reddit Gallery App). Search, favorite, and browse visual posts
-            without the clutter.
+            Search, favorite, and browse visual posts without the clutter.
           </p>
         </header>
 
