@@ -22,22 +22,60 @@ export function useSubredditSearch(query: string) {
     }
 
     let cancelled = false;
-    const controller = new AbortController();
+    const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
     const timeout = window.setTimeout(async () => {
       try {
         setState((prev) => ({ ...prev, status: 'loading' }));
-        const response = await fetch(
+        const trimmed = query.trim();
+        const endpoints = [
           `https://www.reddit.com/subreddits/search.json?q=${encodeURIComponent(
-            query.trim()
-          )}&limit=8`,
-          { signal: controller.signal }
-        );
-        if (!response.ok) {
+            trimmed
+          )}&limit=8&raw_json=1`,
+          `https://api.reddit.com/subreddits/search?q=${encodeURIComponent(
+            trimmed
+          )}&limit=8&raw_json=1`
+        ];
+
+        let data:
+          | {
+              data: { children: { data: any }[] };
+            }
+          | null = null;
+
+        for (const endpoint of endpoints) {
+          if (cancelled) return;
+          try {
+            const response = await fetch(endpoint, {
+              signal: controller?.signal,
+              headers: { Accept: 'application/json' }
+            });
+            if (!response.ok) {
+              console.warn('[subreddit-search] non-OK response', {
+                endpoint,
+                status: response.status,
+                statusText: response.statusText
+              });
+              continue;
+            }
+            data = (await response.json()) as { data: { children: { data: any }[] } };
+            break;
+          } catch (error) {
+            if (controller?.signal.aborted) {
+              return;
+            }
+            console.warn('[subreddit-search] request failed', {
+              endpoint,
+              error: error instanceof Error ? error.message : String(error)
+            });
+          }
+        }
+
+        if (!data) {
+          console.warn('[subreddit-search] all endpoints failed', {
+            query: trimmed
+          });
           throw new Error('Search failed');
         }
-        const data = (await response.json()) as {
-          data: { children: { data: any }[] };
-        };
         if (cancelled) return;
         const results = data.data.children.map((child) => {
           const info = child.data;
@@ -61,7 +99,7 @@ export function useSubredditSearch(query: string) {
 
     return () => {
       cancelled = true;
-      controller.abort();
+      controller?.abort();
       window.clearTimeout(timeout);
     };
   }, [query]);
