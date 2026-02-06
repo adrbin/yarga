@@ -1,4 +1,5 @@
 import { MediaItem } from '../utils/reddit';
+import Card from './ui/Card';
 
 type Props = {
   title: string;
@@ -11,8 +12,9 @@ export default function MediaCard({ title, media, mediaCount, onClick }: Props) 
   const badge = `${media.type.toUpperCase()}${mediaCount > 1 ? ` · ${mediaCount}` : ''}`;
 
   return (
-    <button
-      className="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/5 text-left"
+    <Card
+      as="button"
+      className="group flex flex-col overflow-hidden text-left"
       onClick={onClick}
     >
       <div className="relative h-48 w-full overflow-hidden bg-ink">
@@ -36,6 +38,6 @@ export default function MediaCard({ title, media, mediaCount, onClick }: Props) 
       <div className="space-y-2 px-4 py-3">
         <p className="max-h-10 overflow-hidden text-sm font-semibold text-chalk">{title}</p>
       </div>
-    </button>
+    </Card>
   );
 }

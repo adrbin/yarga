@@ -1,5 +1,6 @@
 import { GalleryPost } from '../utils/reddit';
 import MediaCard from './MediaCard';
+import EmptyState from './ui/EmptyState';
 import SectionHeader from './ui/SectionHeader';
 
 type Props = {
@@ -12,7 +13,7 @@ export default function Gallery({ posts, onOpen }: Props) {
     <section className="space-y-4">
       <SectionHeader title="Gallery" count={`${posts.length} posts`} />
       {posts.length === 0 ? (
-        <p className="text-sm text-chalk/50">No visual posts found.</p>
+        <EmptyState>No visual posts found.</EmptyState>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
           {posts.map((post, postIndex) => (

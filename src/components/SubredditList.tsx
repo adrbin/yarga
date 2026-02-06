@@ -1,5 +1,6 @@
 import { Subreddit } from '../hooks/useSubreddits';
 import Button from './ui/Button';
+import EmptyState from './ui/EmptyState';
 import Panel from './ui/Panel';
 import SectionHeader from './ui/SectionHeader';
 
@@ -22,7 +23,7 @@ export default function SubredditList({
     <Panel>
       <SectionHeader className="mb-3" title={title} count={items.length} />
       {items.length === 0 ? (
-        <p className="text-sm text-chalk/50">Nothing here yet.</p>
+        <EmptyState>Nothing here yet.</EmptyState>
       ) : (
         <ul className="space-y-2">
           {items.map((item) => (

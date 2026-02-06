@@ -3,6 +3,7 @@ import { GalleryPost, MediaItem } from '../utils/reddit';
 import SwipeLayer from './SwipeLayer';
 import ArrowButton from './ui/ArrowButton';
 import Button from './ui/Button';
+import Kicker from './ui/Kicker';
 
 type Props = {
   post: GalleryPost;
@@ -87,9 +88,9 @@ export default function MediaViewer({
       >
         <header className="relative flex items-center justify-between border-b border-white/10 px-6 py-4">
           <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-chalk/50">
+            <Kicker>
               Post {postIndex + 1} / {postCount}
-            </p>
+            </Kicker>
             <p className="mt-2 text-sm font-semibold">{post.title}</p>
           </div>
           <div className="pointer-events-none absolute inset-x-0 top-1/2 flex -translate-y-1/2 items-center justify-center">

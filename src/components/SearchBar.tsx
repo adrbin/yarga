@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { SubredditSearchResult, useSubredditSearch } from '../hooks/useSubredditSearch';
 import Button from './ui/Button';
+import EmptyState from './ui/EmptyState';
+import Kicker from './ui/Kicker';
 import Panel from './ui/Panel';
 
 const formatSubscribers = (count: number) => {
@@ -34,8 +36,8 @@ export default function SearchBar({ onSelect }: Props) {
 
   return (
     <Panel>
-      <label className="text-xs uppercase tracking-[0.3em] text-chalk/50" htmlFor="search">
-        Subreddit Search
+      <label htmlFor="search">
+        <Kicker className="tracking-[0.3em]">Subreddit Search</Kicker>
       </label>
       <input
         id="search"
@@ -55,6 +57,9 @@ export default function SearchBar({ onSelect }: Props) {
         )}
         {status === 'error' && (
           <p className="text-xs uppercase tracking-[0.2em] text-ember">Search failed</p>
+        )}
+        {status === 'success' && results.length === 0 && !showManualOption && (
+          <EmptyState>No matches yet.</EmptyState>
         )}
         {showManualOption && (
           <Button

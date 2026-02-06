@@ -4,6 +4,8 @@ import MediaViewer from './components/MediaViewer';
 import SearchBar from './components/SearchBar';
 import SubredditList from './components/SubredditList';
 import Button from './components/ui/Button';
+import EmptyState from './components/ui/EmptyState';
+import Kicker from './components/ui/Kicker';
 import Panel from './components/ui/Panel';
 import { useGallery } from './hooks/useGallery';
 import { useSubreddits } from './hooks/useSubreddits';
@@ -31,7 +33,7 @@ export default function App() {
     <div className="min-h-screen bg-ink text-chalk">
       <main className="mx-auto flex max-w-3xl flex-col gap-6 px-6 py-10">
         <header className="space-y-3">
-          <p className="text-xs uppercase tracking-[0.4em] text-chalk/50">PWA Gallery</p>
+          <Kicker className="tracking-[0.4em]">PWA Gallery</Kicker>
           <h1 className="font-display text-3xl">Yet Another Reddit Gallery App (YARGA)</h1>
           <p className="text-sm text-chalk/70">
             YARGA (Yet Another Reddit Gallery App). Search, favorite, and browse visual posts
@@ -63,7 +65,7 @@ export default function App() {
           <section className="space-y-4">
             <Panel as="div" className="flex items-center justify-between">
               <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-chalk/50">Now viewing</p>
+                <Kicker>Now viewing</Kicker>
                 <p className="mt-2 text-lg font-semibold">{selectedLabel}</p>
               </div>
               <Button
@@ -78,10 +80,10 @@ export default function App() {
               </Button>
             </Panel>
             {galleryState.status === 'loading' && (
-              <p className="text-sm text-chalk/60">Loading gallery…</p>
+              <EmptyState className="text-chalk/60">Loading gallery…</EmptyState>
             )}
             {galleryState.status === 'error' && (
-              <p className="text-sm text-ember">Could not load this subreddit.</p>
+              <EmptyState tone="error">Could not load this subreddit.</EmptyState>
             )}
             {galleryState.status === 'success' && (
               <Gallery
