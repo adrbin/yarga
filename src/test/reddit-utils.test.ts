@@ -31,7 +31,12 @@ describe('extractGalleryPosts', () => {
               id: 'vid1',
               title: 'Video post',
               is_video: true,
-              media: { reddit_video: { fallback_url: 'https://example.com/v.mp4' } },
+              media: {
+                reddit_video: {
+                  fallback_url: 'https://example.com/v.mp4',
+                  hls_url: 'https://example.com/v.m3u8'
+                }
+              },
               preview: { images: [{ source: { url: 'https://example.com/v.jpg' } }] }
             }
           }
@@ -44,6 +49,7 @@ describe('extractGalleryPosts', () => {
     expect(posts[0].media[0].url).toContain('img.jpg');
     expect(posts[1].media[0].type).toBe('gif');
     expect(posts[2].media[0].type).toBe('video');
+    expect(posts[2].media[0].url).toBe('https://example.com/v.m3u8');
   });
 
   it('extracts gallery images', () => {

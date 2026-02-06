@@ -61,10 +61,12 @@ export function extractGalleryPosts(listing: any): GalleryPost[] {
       }
 
       if (post.is_video && post.media?.reddit_video?.fallback_url) {
+        const videoSource =
+          post.media.reddit_video.hls_url ?? post.media.reddit_video.fallback_url;
         media.push({
           id: `${post.id}-video`,
           type: 'video',
-          url: post.media.reddit_video.fallback_url,
+          url: decodeHtml(videoSource),
           poster: post.preview?.images?.[0]?.source?.url
             ? decodeHtml(post.preview.images[0].source.url)
             : undefined

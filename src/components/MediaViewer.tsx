@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { GalleryPost, MediaItem } from '../utils/reddit';
 import SwipeLayer from './SwipeLayer';
 
@@ -71,6 +71,7 @@ export default function MediaViewer({
   const canGoNext = mediaIndex < mediaCount - 1;
   const canGoPrevPost = postIndex > 0;
   const canGoNextPost = postIndex < postCount - 1;
+  const [isMuted, setIsMuted] = useState(false);
 
   return (
     <div className="fixed inset-0 z-50 bg-ink text-chalk">
@@ -107,9 +108,13 @@ export default function MediaViewer({
               src={media.url}
               poster={media.poster}
               autoPlay
-              muted
+              muted={isMuted}
               playsInline
               controls
+              onVolumeChange={(event) => {
+                const target = event.currentTarget;
+                setIsMuted(target.muted);
+              }}
             />
           ) : (
             <img
