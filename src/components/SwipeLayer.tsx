@@ -25,6 +25,10 @@ export default function SwipeLayer({
   const startRef = useRef<{ x: number; y: number; pointerId: number } | null>(null);
 
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    const target = event.target as HTMLElement | null;
+    if (target?.closest('[data-no-swipe="true"], button, input, textarea, select')) {
+      return;
+    }
     startRef.current = { x: event.clientX, y: event.clientY, pointerId: event.pointerId };
     if ('setPointerCapture' in event.currentTarget) {
       event.currentTarget.setPointerCapture(event.pointerId);
