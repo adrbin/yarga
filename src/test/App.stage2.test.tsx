@@ -50,13 +50,13 @@ describe('Stage 2 - search and persistence', () => {
     const user = userEvent.setup();
     window.localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify({ items: [{ name: 'earthporn', lastVisitedAt: 2, favorited: false }] })
+      JSON.stringify({ items: [{ name: 'naturepics', lastVisitedAt: 2, favorited: false }] })
     );
 
     render(<App />);
 
-    await user.click(screen.getByRole('button', { name: /toggle favorite earthporn/i }));
-    expect(screen.getAllByText('r/earthporn')[0]).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /toggle favorite naturepics/i }));
+    expect(screen.getAllByText('r/naturepics')[0]).toBeInTheDocument();
     const stored = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || '{}');
     expect(stored.items[0].favorited).toBe(true);
   });

@@ -15,7 +15,7 @@ describe('Stage 1 - shell lists', () => {
       JSON.stringify({
         items: [
           { name: 'imaginary', lastVisitedAt: 1, favorited: false },
-          { name: 'earthporn', lastVisitedAt: 2, favorited: true }
+          { name: 'naturepics', lastVisitedAt: 2, favorited: true }
         ]
       })
     );
@@ -24,7 +24,7 @@ describe('Stage 1 - shell lists', () => {
 
     expect(screen.getByText('Favorites')).toBeInTheDocument();
     expect(screen.getByText('Recently Visited')).toBeInTheDocument();
-    expect(screen.getAllByText('r/earthporn').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('r/naturepics').length).toBeGreaterThan(0);
     expect(screen.getByText('r/imaginary')).toBeInTheDocument();
   });
 
@@ -33,13 +33,13 @@ describe('Stage 1 - shell lists', () => {
     window.localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify({
-        items: [{ name: 'earthporn', lastVisitedAt: 2, favorited: true }]
+        items: [{ name: 'naturepics', lastVisitedAt: 2, favorited: true }]
       })
     );
 
     render(<App />);
 
-    await user.click(screen.getAllByRole('button', { name: /remove earthporn/i })[0]);
-    expect(screen.queryByText('r/earthporn')).not.toBeInTheDocument();
+    await user.click(screen.getAllByRole('button', { name: /remove naturepics/i })[0]);
+    expect(screen.queryByText('r/naturepics')).not.toBeInTheDocument();
   });
 });
