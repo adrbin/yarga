@@ -1,13 +1,11 @@
 import type { ReactNode } from 'react';
+import { cx } from '../../utils/cx';
 
 type Props = {
   children: ReactNode;
   className?: string;
   as?: 'section' | 'div';
 };
-
-const cx = (...classes: (string | undefined | false)[]) =>
-  classes.filter(Boolean).join(' ');
 
 export default function Panel({ children, className, as = 'section' }: Props) {
   const Component = as;

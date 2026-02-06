@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { GalleryPost, MediaItem } from '../utils/reddit';
 import SwipeLayer from './SwipeLayer';
+import ArrowButton from './ui/ArrowButton';
 import Button from './ui/Button';
 
 type Props = {
@@ -92,32 +93,13 @@ export default function MediaViewer({
             <p className="mt-2 text-sm font-semibold">{post.title}</p>
           </div>
           <div className="pointer-events-none absolute inset-x-0 top-1/2 flex -translate-y-1/2 items-center justify-center">
-            <Button
-              type="button"
-              aria-label="Previous post"
+            <ArrowButton
+              ariaLabel="Previous post"
+              direction="up"
               disabled={!canGoPrevPost}
               onClick={onSwipeDown}
-              data-no-swipe="true"
-              variant="ghost"
-              size="ghost-arrow"
-              className={[
-                'pointer-events-auto',
-                canGoPrevPost ? 'opacity-100' : 'cursor-not-allowed opacity-40'
-              ].join(' ')}
-            >
-              <svg
-                aria-hidden="true"
-                className="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M4.5 12.5L10 7l5.5 5.5" />
-              </svg>
-            </Button>
+              dataNoSwipe
+            />
           </div>
           <div className="flex items-center gap-3">
             <span className="text-[10px] uppercase tracking-[0.2em] text-chalk/40">Esc</span>
@@ -155,90 +137,33 @@ export default function MediaViewer({
           )}
         </div>
         <div className="pointer-events-none absolute inset-y-24 left-0 right-0 z-20 hidden items-center justify-between px-4 md:flex">
-          <Button
-            type="button"
-            aria-label="Previous media"
+          <ArrowButton
+            ariaLabel="Previous media"
+            direction="left"
             disabled={!canGoPrev}
             onClick={onSwipeRight}
-            data-no-swipe="true"
-            variant="ghost"
-            size="ghost-arrow"
-            className={[
-              'pointer-events-auto',
-              canGoPrev ? 'opacity-100' : 'cursor-not-allowed opacity-40'
-            ].join(' ')}
-          >
-            <svg
-              aria-hidden="true"
-              className="h-5 w-5"
-              viewBox="0 0 20 20"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M12.5 4.5L7 10l5.5 5.5" />
-            </svg>
-          </Button>
-          <Button
-            type="button"
-            aria-label="Next media"
+            dataNoSwipe
+          />
+          <ArrowButton
+            ariaLabel="Next media"
+            direction="right"
             disabled={!canGoNext}
             onClick={onSwipeLeft}
-            data-no-swipe="true"
-            variant="ghost"
-            size="ghost-arrow"
-            className={[
-              'pointer-events-auto',
-              canGoNext ? 'opacity-100' : 'cursor-not-allowed opacity-40'
-            ].join(' ')}
-          >
-            <svg
-              aria-hidden="true"
-              className="h-5 w-5"
-              viewBox="0 0 20 20"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M7.5 4.5L13 10l-5.5 5.5" />
-            </svg>
-          </Button>
+            dataNoSwipe
+          />
         </div>
         <footer className="relative flex items-center justify-between border-t border-white/10 px-6 py-4 text-xs text-chalk/60">
           <span>
             Media {mediaIndex + 1} / {mediaCount}
           </span>
           <div className="pointer-events-none absolute inset-x-0 top-1/2 flex -translate-y-1/2 items-center justify-center">
-            <Button
-              type="button"
-              aria-label="Next post"
+            <ArrowButton
+              ariaLabel="Next post"
+              direction="down"
               disabled={!canGoNextPost}
               onClick={onSwipeUp}
-              data-no-swipe="true"
-              variant="ghost"
-              size="ghost-arrow"
-              className={[
-                'pointer-events-auto',
-                canGoNextPost ? 'opacity-100' : 'cursor-not-allowed opacity-40'
-              ].join(' ')}
-            >
-              <svg
-                aria-hidden="true"
-                className="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M4.5 7.5L10 13l5.5-5.5" />
-              </svg>
-            </Button>
+              dataNoSwipe
+            />
           </div>
           <div className="flex items-center gap-3">
             <span>Swipe or use ←/→ for media · ↑/↓ for posts</span>

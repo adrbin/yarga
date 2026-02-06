@@ -1,4 +1,5 @@
 import type { ButtonHTMLAttributes } from 'react';
+import { cx } from '../../utils/cx';
 
 type Variant = 'pill' | 'ghost' | 'list';
 type Size = 'pill-sm' | 'pill-md' | 'ghost-arrow' | 'list';
@@ -22,9 +23,6 @@ const sizes: Record<Size, string> = {
   'ghost-arrow': 'h-10 w-20',
   list: 'px-3 py-2'
 };
-
-const cx = (...classes: (string | undefined | false)[]) =>
-  classes.filter(Boolean).join(' ');
 
 export default function Button({
   variant = 'pill',
