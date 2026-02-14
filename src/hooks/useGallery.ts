@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { extractGalleryPosts, GalleryPost } from '../utils/reddit';
+import { extractGalleryPosts, GalleryPost, RedditListing } from '../utils/reddit';
 
 type GalleryState = {
   status: 'idle' | 'loading' | 'success' | 'error';
@@ -65,7 +65,7 @@ export function useGallery(subreddit: string | null) {
         if (!response.ok) {
           throw new Error('Failed to load');
         }
-        const data = (await response.json()) as { data?: { after?: string | null } };
+        const data = (await response.json()) as RedditListing;
         if (cancelled || generation !== generationRef.current) return;
         const posts = extractGalleryPosts(data);
         const after = data?.data?.after ?? null;
@@ -113,7 +113,7 @@ export function useGallery(subreddit: string | null) {
       if (!response.ok) {
         throw new Error('Failed to load more');
       }
-      const data = (await response.json()) as { data?: { after?: string | null } };
+      const data = (await response.json()) as RedditListing;
       if (generation !== generationRef.current) {
         return 0;
       }

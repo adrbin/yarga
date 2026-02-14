@@ -60,8 +60,9 @@ type RedditPost = {
   post_hint?: string;
 };
 
-type RedditListing = {
+export type RedditListing = {
   data?: {
+    after?: string | null;
     children?: { data?: RedditPost }[];
   };
 };
