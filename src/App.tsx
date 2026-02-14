@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import Gallery from './components/Gallery';
 import MediaViewer from './components/MediaViewer';
 import SearchBar from './components/SearchBar';
@@ -17,6 +17,7 @@ export default function App() {
   const [view, setView] = useState<'home' | 'gallery'>('home');
   const galleryState = useGallery(view === 'gallery' ? activeSubreddit : null);
   const viewer = useViewerNavigation(galleryState.posts);
+  const viewerLoadMoreInFlightRef = useRef(false);
 
   const handleSelect = (name: string) => {
     addRecent(name);
@@ -28,6 +29,33 @@ export default function App() {
     if (!activeSubreddit) return null;
     return `r/${activeSubreddit}`;
   }, [activeSubreddit]);
+
+  const handleGalleryLoadMore = useCallback(() => {
+    void galleryState.loadMore();
+  }, [galleryState]);
+
+  const handleViewerNextPost = useCallback(async () => {
+    const currentPostIndex = viewer.state.postIndex;
+    const isLastLoadedPost = currentPostIndex >= galleryState.posts.length - 1;
+    if (!isLastLoadedPost) {
+      viewer.nextPost();
+      return;
+    }
+
+    if (!galleryState.hasMore || viewerLoadMoreInFlightRef.current) {
+      return;
+    }
+
+    viewerLoadMoreInFlightRef.current = true;
+    try {
+      const appendedCount = await galleryState.loadMore();
+      if (appendedCount > 0) {
+        viewer.open(currentPostIndex + 1, 0);
+      }
+    } finally {
+      viewerLoadMoreInFlightRef.current = false;
+    }
+  }, [galleryState, viewer]);
 
   return (
     <div className="min-h-screen bg-ink text-chalk">
@@ -87,6 +115,9 @@ export default function App() {
             {galleryState.status === 'success' && (
               <Gallery
                 posts={galleryState.posts}
+                hasMore={galleryState.hasMore}
+                isLoadingMore={galleryState.isLoadingMore}
+                onLoadMore={handleGalleryLoadMore}
                 onOpen={(postIndex, mediaIndex) => viewer.open(postIndex, mediaIndex)}
               />
             )}
@@ -104,7 +135,9 @@ export default function App() {
           onBack={viewer.close}
           onSwipeLeft={viewer.nextMedia}
           onSwipeRight={viewer.prevMedia}
-          onSwipeUp={viewer.nextPost}
+          onSwipeUp={() => {
+            void handleViewerNextPost();
+          }}
           onSwipeDown={viewer.prevPost}
         />
       )}
