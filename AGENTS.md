@@ -70,3 +70,4 @@ Tests
 - Update tests alongside changes (prefer BDD-style in `src/test/`).
 - Keep UX aligned with the existing gallery/viewer flow.
 - If touching media extraction, update `src/test/reddit-utils.test.ts`.
+- Update this guide with any new architectural decisions or patterns you introduce and keep documentation (README.md) up to date.
