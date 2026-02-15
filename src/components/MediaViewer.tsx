@@ -93,7 +93,7 @@ export default function MediaViewer({
             </Kicker>
             <p className="mt-2 text-sm font-semibold">{post.title}</p>
           </div>
-          <div className="pointer-events-none absolute inset-x-0 top-1/2 flex -translate-y-1/2 items-center justify-center">
+          <div className="pointer-events-none absolute inset-x-0 top-1/2 hidden -translate-y-1/2 items-center justify-center md:flex">
             <ArrowButton
               ariaLabel="Previous post"
               direction="up"
@@ -157,7 +157,7 @@ export default function MediaViewer({
           <span>
             Media {mediaIndex + 1} / {mediaCount}
           </span>
-          <div className="pointer-events-none absolute inset-x-0 top-1/2 flex -translate-y-1/2 items-center justify-center">
+          <div className="pointer-events-none absolute inset-x-0 top-1/2 hidden -translate-y-1/2 items-center justify-center md:flex">
             <ArrowButton
               ariaLabel="Next post"
               direction="down"
