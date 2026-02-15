@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { extractGalleryPosts, GalleryPost, RedditListing } from '../utils/reddit';
+import { buildRedditUrl } from '../utils/redditApi';
 
 type GalleryState = {
   status: 'idle' | 'loading' | 'success' | 'error';
@@ -18,12 +19,10 @@ const INITIAL_STATE: GalleryState = {
 };
 
 const buildSubredditUrl = (subreddit: string, after?: string | null) => {
-  const url = new URL(`https://www.reddit.com/r/${subreddit}.json`);
-  url.searchParams.set('limit', '50');
-  if (after) {
-    url.searchParams.set('after', after);
-  }
-  return url.toString();
+  return buildRedditUrl(`/r/${subreddit}.json`, {
+    limit: 50,
+    after: after ?? undefined
+  });
 };
 
 const appendUniquePosts = (existing: GalleryPost[], incoming: GalleryPost[]) => {

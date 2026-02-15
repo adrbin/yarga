@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { buildRedditUrl } from '../utils/redditApi';
 
 export type SubredditSearchResult = {
   name: string;
@@ -41,49 +42,35 @@ export function useSubredditSearch(query: string) {
       try {
         setState((prev) => ({ ...prev, status: 'loading' }));
         const trimmed = query.trim();
-        const endpoints = [
-          `https://www.reddit.com/subreddits/search.json?q=${encodeURIComponent(
-            trimmed
-          )}&limit=8&raw_json=1`,
-          `https://api.reddit.com/subreddits/search?q=${encodeURIComponent(
-            trimmed
-          )}&limit=8&raw_json=1`
-        ];
+        const endpoint = buildRedditUrl('/subreddits/search.json', {
+          q: trimmed,
+          limit: 8,
+          raw_json: 1
+        });
 
         let data: SubredditSearchApiResponse | null = null;
 
-        for (const endpoint of endpoints) {
-          if (cancelled) return;
-          try {
-            const response = await fetch(endpoint, {
-              signal: controller?.signal,
-              headers: { Accept: 'application/json' }
-            });
-            if (!response.ok) {
-              console.warn('[subreddit-search] non-OK response', {
-                endpoint,
-                status: response.status,
-                statusText: response.statusText
-              });
-              continue;
-            }
-            data = (await response.json()) as SubredditSearchApiResponse;
-            break;
-          } catch (error) {
-            if (controller?.signal.aborted) {
-              return;
-            }
-            console.warn('[subreddit-search] request failed', {
-              endpoint,
-              error: error instanceof Error ? error.message : String(error)
-            });
+        if (cancelled) return;
+        try {
+          const response = await fetch(endpoint, {
+            signal: controller?.signal,
+            headers: { Accept: 'application/json' }
+          });
+          if (!response.ok) {
+            throw new Error('Search failed');
           }
+          data = (await response.json()) as SubredditSearchApiResponse;
+        } catch (error) {
+          if (controller?.signal.aborted) {
+            return;
+          }
+          console.warn('[subreddit-search] request failed', {
+            endpoint,
+            error: error instanceof Error ? error.message : String(error)
+          });
         }
 
         if (!data) {
-          console.warn('[subreddit-search] all endpoints failed', {
-            query: trimmed
-          });
           throw new Error('Search failed');
         }
         if (cancelled) return;

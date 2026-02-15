@@ -31,6 +31,10 @@ Components
 
 Data utilities
 - `src/utils/reddit.ts`: extract media items from Reddit listings
+- `src/utils/redditApi.ts`: Reddit URL builder using `VITE_REDDIT_BASE_URL`
+
+Serverless
+- `netlify/functions/reddit-proxy.ts`: Reddit JSON proxy for `/api/reddit/*`
 
 Tests
 - `src/test/App.stage1.test.tsx`: stage 1
@@ -62,9 +66,21 @@ Tests
 - Run tests: `pnpm test`
 - Watch mode: `pnpm test:watch`
 - Lint: `pnpm lint`
+- Typecheck (required before finishing changes): `pnpm typecheck`
+- If you add TypeScript files outside `src/` (for example `netlify/functions`), ensure they are covered by a TS config and fix any reported errors before completion.
+- If you add JavaScript/MJS scripts (for example in `scripts/`), ensure they are covered by `tsconfig.scripts.json` so `pnpm typecheck` catches script type errors automatically.
 
 ## PWA
 - Vite PWA is already configured; do not remove `workbox-window` usage or the manifest/service worker setup.
+
+## API Target Config
+- Frontend uses `VITE_REDDIT_BASE_URL` for all Reddit fetches.
+- Default is direct Reddit: `https://www.reddit.com`.
+- Proxy mode sets `VITE_REDDIT_BASE_URL=/api/reddit`.
+- Netlify function deployment is controlled by `NETLIFY_ENABLE_REDDIT_PROXY`:
+  - `false` (default): function is not deployed.
+  - `true`: `reddit-proxy` is prepared/deployed.
+- Netlify redirect in `netlify.toml` maps `/api/reddit/*` to the `reddit-proxy` function.
 
 ## If You’re Adding Features
 - Update tests alongside changes (prefer BDD-style in `src/test/`).

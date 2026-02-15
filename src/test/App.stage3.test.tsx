@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 import App from '../App';
+import { buildRedditUrl } from '../utils/redditApi';
 
 const STORAGE_KEY = 'reddit_gallery_subreddits';
 
@@ -53,7 +54,7 @@ describe('Stage 3 - gallery view', () => {
     expect(await screen.findByText('Gallery')).toBeInTheDocument();
     expect(await screen.findByText('Nice photo')).toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledWith(
-      'https://www.reddit.com/r/pics.json?limit=50',
+      buildRedditUrl('/r/pics.json', { limit: 50 }),
       expect.anything()
     );
   });

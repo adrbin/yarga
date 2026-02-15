@@ -1,0 +1,14 @@
+[build]
+  command = "pnpm netlify:prepare && pnpm build"
+  publish = "dist"
+  functions = ".netlify/functions-build"
+
+[dev]
+  command = "pnpm dev"
+  targetPort = 5173
+
+[[redirects]]
+  from = "/api/reddit/*"
+  to = "/.netlify/functions/reddit-proxy/:splat"
+  status = 200
+  force = true

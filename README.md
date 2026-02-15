@@ -1,6 +1,6 @@
 # YARGA
 
-Yet Another Reddit Gallery App (YARGA) is a Vite + React PWA that lets you search subreddits, save favorites, and browse image/video/gif posts in a swipeable viewer. Data is fetched client-side from Reddit’s public JSON endpoints with localStorage persistence.
+Yet Another Reddit Gallery App (YARGA) is a Vite + React PWA that lets you search subreddits, save favorites, and browse image/video/gif posts in a swipeable viewer. Data is fetched from Reddit JSON endpoints (directly by default, or via a Netlify proxy) with localStorage persistence.
 
 ## Features
 - Subreddit search with autocomplete
@@ -27,6 +27,12 @@ Run the dev server:
 
 ```bash
 pnpm dev
+```
+
+Run with Netlify Functions locally:
+
+```bash
+pnpm dev:netlify
 ```
 
 Build for production:
@@ -68,9 +74,28 @@ pnpm lint
 - `src/test/`: stage-based tests and utils tests
 
 ## Notes
-- All data fetching is client-side from `https://www.reddit.com/r/<subreddit>.json`.
+- Frontend Reddit URL target is configured with `VITE_REDDIT_BASE_URL`.
+- Default (direct): `https://www.reddit.com`
+- Proxy mode: `/api/reddit`
+- Netlify function deployment is controlled by `NETLIFY_ENABLE_REDDIT_PROXY`.
+- `NETLIFY_ENABLE_REDDIT_PROXY=false` (default): proxy function is not deployed.
+- `NETLIFY_ENABLE_REDDIT_PROXY=true`: proxy function is prepared and deployed.
+- When `VITE_REDDIT_BASE_URL=/api/reddit` and `NETLIFY_ENABLE_REDDIT_PROXY=true`, requests route to the Netlify function (`/api/reddit/*` -> `/.netlify/functions/reddit-proxy/:splat`).
+- `pnpm dev` can use proxy mode through Vite dev proxy config.
+- `pnpm dev:netlify` runs the real Netlify function locally.
 - Swipe handling lives in `src/components/SwipeLayer.tsx` and `src/hooks/useViewerNavigation.ts`.
 - Recents/favorites are persisted in localStorage.
+
+## Environment
+Copy `.env.example` values as needed:
+
+```bash
+VITE_REDDIT_BASE_URL=https://www.reddit.com
+# VITE_REDDIT_BASE_URL=/api/reddit
+
+REDDIT_UPSTREAM_BASE_URL=https://www.reddit.com
+NETLIFY_ENABLE_REDDIT_PROXY=false
+```
 
 ## PWA
 The app is configured as a PWA via Vite PWA. The manifest and service worker are already set up.

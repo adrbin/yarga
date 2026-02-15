@@ -3,6 +3,16 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
+  server: {
+    proxy: {
+      '/api/reddit': {
+        target: 'https://www.reddit.com',
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/api\/reddit/, '')
+      }
+    }
+  },
   plugins: [
     react(),
     VitePWA({

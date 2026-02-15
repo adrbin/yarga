@@ -2,6 +2,7 @@ import { act, fireEvent, render, screen, waitFor, within } from '@testing-librar
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 import App from '../App';
+import { buildRedditUrl } from '../utils/redditApi';
 
 const STORAGE_KEY = 'reddit_gallery_subreddits';
 
@@ -110,7 +111,7 @@ describe('Stage 5 - infinite post pagination', () => {
     expect(await screen.findByText('Second page post')).toBeInTheDocument();
     expect(fetchMock).toHaveBeenNthCalledWith(
       2,
-      'https://www.reddit.com/r/pics.json?limit=50&after=t3_after1'
+      buildRedditUrl('/r/pics.json', { limit: 50, after: 't3_after1' })
     );
   });
 
@@ -172,7 +173,7 @@ describe('Stage 5 - infinite post pagination', () => {
     expect(await within(viewer).findByText('Second page post')).toBeInTheDocument();
     expect(fetchMock).toHaveBeenNthCalledWith(
       2,
-      'https://www.reddit.com/r/pics.json?limit=50&after=t3_after1'
+      buildRedditUrl('/r/pics.json', { limit: 50, after: 't3_after1' })
     );
   });
 
