@@ -8,6 +8,17 @@ export default [
     ignores: ["dist", "node_modules"],
   },
   js.configs.recommended,
+  {
+    files: ["scripts/**/*.mjs"],
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "module",
+      globals: {
+        console: "readonly",
+        process: "readonly",
+      },
+    },
+  },
   ...tseslint.configs.recommended,
   ...tseslint.configs.strict,
   ...tseslint.configs.stylistic,

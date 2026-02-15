@@ -9,5 +9,5 @@
     "skipLibCheck": true,
     "isolatedModules": true
   },
-  "include": ["netlify/functions/**/*.ts"]
+  "include": ["netlify/edge-functions/**/*.ts"]
 }

@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { handler } from '../../netlify/functions/reddit-proxy';
+import handler from '../../netlify/edge-functions/reddit-proxy';
 
-describe('reddit proxy function', () => {
+describe('reddit proxy edge function', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
     vi.unstubAllEnvs();
@@ -15,30 +15,27 @@ describe('reddit proxy function', () => {
     });
     vi.stubGlobal('fetch', fetchMock);
 
-    const response = await handler({
-      path: '/.netlify/functions/reddit-proxy/r/pics.json',
-      rawQuery: 'limit=50&after=t3_after1'
-    });
+    const response = await handler(
+      new Request('https://example.test/api/reddit/r/pics.json?limit=50&after=t3_after1')
+    );
 
     const [upstream, init] = fetchMock.mock.calls[0] as [URL, RequestInit];
     expect(String(upstream)).toBe('https://www.reddit.com/r/pics.json?limit=50&after=t3_after1');
     expect(init.headers).toEqual({
       Accept: 'application/json',
     });
-    expect(response.statusCode).toBe(200);
-    expect(response.body).toBe('{"ok":true}');
+    expect(response.status).toBe(200);
+    await expect(response.text()).resolves.toBe('{"ok":true}');
   });
 
   it('rejects invalid paths', async () => {
     const fetchMock = vi.fn();
     vi.stubGlobal('fetch', fetchMock);
 
-    const response = await handler({
-      path: '/.netlify/functions/reddit-proxy/user/me.json'
-    });
+    const response = await handler(new Request('https://example.test/api/reddit/user/me.json'));
 
     expect(fetchMock).not.toHaveBeenCalled();
-    expect(response.statusCode).toBe(400);
+    expect(response.status).toBe(400);
   });
 
   it('uses configurable upstream URL', async () => {
@@ -50,17 +47,15 @@ describe('reddit proxy function', () => {
     });
     vi.stubGlobal('fetch', fetchMock);
 
-    const response = await handler({
-      path: '/api/reddit/subreddits/search.json',
-      rawQuery: 'q=cats&limit=8&raw_json=1'
-    });
+    const response = await handler(
+      new Request('https://example.test/api/reddit/subreddits/search.json?q=cats&limit=8&raw_json=1')
+    );
 
     const [upstream] = fetchMock.mock.calls[0] as [URL];
     expect(String(upstream)).toBe(
       'https://proxy.example.com/base/subreddits/search.json?q=cats&limit=8&raw_json=1'
     );
-    expect(response.statusCode).toBe(404);
-    expect(response.body).toBe('{"message":"not found"}');
+    expect(response.status).toBe(404);
+    await expect(response.text()).resolves.toBe('{"message":"not found"}');
   });
 });
-

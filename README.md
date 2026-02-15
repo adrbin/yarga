@@ -1,6 +1,6 @@
 # YARGA
 
-Yet Another Reddit Gallery App (YARGA) is a Vite + React PWA that lets you search subreddits, save favorites, and browse image/video/gif posts in a swipeable viewer. Data is fetched from Reddit JSON endpoints (directly by default, or via a Netlify proxy) with localStorage persistence.
+Yet Another Reddit Gallery App (YARGA) is a Vite + React PWA that lets you search subreddits, save favorites, and browse image/video/gif posts in a swipeable viewer. Data is fetched from Reddit JSON endpoints (directly by default, or via a Netlify Edge proxy) with localStorage persistence.
 
 ## Features
 - Subreddit search with autocomplete
@@ -29,7 +29,7 @@ Run the dev server:
 pnpm dev
 ```
 
-Run with Netlify Functions locally:
+Run with Netlify Edge Functions locally:
 
 ```bash
 pnpm dev:netlify
@@ -77,12 +77,12 @@ pnpm lint
 - Frontend Reddit URL target is configured with `VITE_REDDIT_BASE_URL`.
 - Default (direct): `https://www.reddit.com`
 - Proxy mode: `/api/reddit`
-- Netlify function deployment is controlled by `NETLIFY_ENABLE_REDDIT_PROXY`.
-- `NETLIFY_ENABLE_REDDIT_PROXY=false` (default): proxy function is not deployed.
-- `NETLIFY_ENABLE_REDDIT_PROXY=true`: proxy function is prepared and deployed.
-- When `VITE_REDDIT_BASE_URL=/api/reddit` and `NETLIFY_ENABLE_REDDIT_PROXY=true`, requests route to the Netlify function (`/api/reddit/*` -> `/.netlify/functions/reddit-proxy/:splat`).
+- Netlify edge function deployment is controlled by `NETLIFY_ENABLE_REDDIT_PROXY`.
+- `NETLIFY_ENABLE_REDDIT_PROXY=false` (default): proxy edge function is not prepared.
+- `NETLIFY_ENABLE_REDDIT_PROXY=true`: proxy edge function is prepared and deployed.
+- When `VITE_REDDIT_BASE_URL=/api/reddit` and `NETLIFY_ENABLE_REDDIT_PROXY=true`, requests route to the Netlify edge function (`/api/reddit/*` -> `reddit-proxy`).
 - `pnpm dev` can use proxy mode through Vite dev proxy config.
-- `pnpm dev:netlify` runs the real Netlify function locally.
+- `pnpm dev:netlify` runs the real Netlify edge function locally.
 - Swipe handling lives in `src/components/SwipeLayer.tsx` and `src/hooks/useViewerNavigation.ts`.
 - Recents/favorites are persisted in localStorage.
 
